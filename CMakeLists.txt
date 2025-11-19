@@ -23,7 +23,8 @@ endif()
 
 # Windows version definition (user configurable)
 if(WIN32)
-    set(_WIN32_WINNT "0x0A00" CACHE STRING "Windows version definition (0x0A00 = Windows 10/11)")
+    set(_WIN32_WINNT "0x0A00" CACHE STRING "Windows version definition (e.g., 0x0A00 = Windows 10/11, leave empty to not define)")
+    option(USE_WIN32_LEAN_AND_MEAN "Define WIN32_LEAN_AND_MEAN to exclude rarely-used Windows headers" ON)
 endif()
 
 # Add AsyncStateMachine dependencies
@@ -100,8 +101,15 @@ target_link_libraries(${PROJECT_NAME}
 
 # Platform-specific compiler flags and definitions
 if(WIN32)
-    # Windows version definition
-    target_compile_definitions(${PROJECT_NAME} PUBLIC _WIN32_WINNT=${_WIN32_WINNT})
+    # Windows version definition (optional)
+    if(_WIN32_WINNT)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC _WIN32_WINNT=${_WIN32_WINNT})
+    endif()
+    
+    # WIN32_LEAN_AND_MEAN (optional)
+    if(USE_WIN32_LEAN_AND_MEAN)
+        target_compile_definitions(${PROJECT_NAME} PUBLIC WIN32_LEAN_AND_MEAN)
+    endif()
 endif()
 
 if(MSVC)
