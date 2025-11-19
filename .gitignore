@@ -1,0 +1,52 @@
+# CMake build directories
+build/
+cmake-build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+Makefile
+*.cmake
+!CMakeLists.txt
+!cmake/*.cmake
+
+# Build artifacts
+*.a
+*.lib
+*.so
+*.dylib
+*.dll
+*.exe
+
+# IDE directories
+.vs/
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Compiled Object files
+*.o
+*.obj
+*.lo
+*.slo
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Debugger files
+*.dSYM/
+*.su
+*.idb
+*.pdb
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Package files
+*.tar.gz
+*.zip
+*.7z

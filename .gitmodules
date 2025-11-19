@@ -1,0 +1,3 @@
+[submodule "external/AsyncStateMachine"]
+	path = external/AsyncStateMachine
+	url = https://github.com/endurodave/AsyncStateMachine
