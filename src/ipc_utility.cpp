@@ -1,6 +1,8 @@
 #include "boost_ipc_utility/ipc_utility.h"
 #include "AsyncStateMachine.h"
 
+#include "boost_ipc_utility/boost/interprocess.h"
+
 namespace boost_ipc_utility {
 
 IPCUtility::IPCUtility() : m_initialized(false) {

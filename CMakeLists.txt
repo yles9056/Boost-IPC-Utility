@@ -27,6 +27,9 @@ if(WIN32)
     option(USE_WIN32_LEAN_AND_MEAN "Define WIN32_LEAN_AND_MEAN to exclude rarely-used Windows headers" ON)
 endif()
 
+# Boost IPC options
+option(USE_BOOST_INTERPROCESS_SHARED_DIR_FUNC "Define BOOST_INTERPROCESS_SHARED_DIR_FUNC to use custom shared memory directory" OFF)
+
 # Add AsyncStateMachine dependencies
 # Set DelegateMQ build options for AsyncStateMachine
 set(DMQ_ALLOCATOR "OFF" CACHE BOOL "Enable DelegateMQ custom allocator")
@@ -67,15 +70,28 @@ set(LIBRARY_HEADERS
     include/boost_ipc_utility/ipc_utility.h
 )
 
+set(LIBRARY_BOOST_HEADERS
+    include/boost_ipc_utility/boost/interprocess.h
+)
+
+set(LIBRARY_UTIL_HEADERS
+    include/boost_ipc_utility/util/singleton.h
+    include/boost_ipc_utility/util/macro.h
+)
+
 # Organize source files into Visual Studio filters
 source_group("Source Files" FILES ${LIBRARY_SOURCES})
 source_group("Header Files" FILES ${LIBRARY_HEADERS})
+source_group("Header Files\\boost" FILES ${LIBRARY_BOOST_HEADERS})
+source_group("Header Files\\util" FILES ${LIBRARY_UTIL_HEADERS})
 source_group("DelegateMQ" FILES ${DMQ_PREDEF_SOURCES})
 
 # Create static library
 add_library(${PROJECT_NAME} STATIC
     ${LIBRARY_SOURCES}
     ${LIBRARY_HEADERS}
+    ${LIBRARY_BOOST_HEADERS}
+    ${LIBRARY_UTIL_HEADERS}
 )
 
 # Specify include directories
@@ -110,6 +126,11 @@ if(WIN32)
     if(USE_WIN32_LEAN_AND_MEAN)
         target_compile_definitions(${PROJECT_NAME} PUBLIC WIN32_LEAN_AND_MEAN)
     endif()
+endif()
+
+# Boost Interprocess custom shared directory (optional)
+if(USE_BOOST_INTERPROCESS_SHARED_DIR_FUNC)
+    target_compile_definitions(${PROJECT_NAME} PUBLIC BOOST_INTERPROCESS_SHARED_DIR_FUNC)
 endif()
 
 if(MSVC)
