@@ -24,11 +24,12 @@ endif()
 # Windows version definition (user configurable)
 if(WIN32)
     set(_WIN32_WINNT "0x0A00" CACHE STRING "Windows version definition (e.g., 0x0A00 = Windows 10/11, leave empty to not define)")
-    option(USE_WIN32_LEAN_AND_MEAN "Define WIN32_LEAN_AND_MEAN to exclude rarely-used Windows headers" ON)
+    option(WIN32_LEAN_AND_MEAN "Define WIN32_LEAN_AND_MEAN to exclude rarely-used Windows headers" ON)
 endif()
 
 # Boost IPC options
-option(USE_BOOST_INTERPROCESS_SHARED_DIR_FUNC "Define BOOST_INTERPROCESS_SHARED_DIR_FUNC to use custom shared memory directory" OFF)
+option(BOOST_INTERPROCESS_SHARED_DIR_FUNC "Define BOOST_INTERPROCESS_SHARED_DIR_FUNC to use custom shared memory directory" OFF)
+option(BIU_ENABLE_LOGGING "Enable logging in the Boost IPC Utility library" ON)
 
 # Add AsyncStateMachine dependencies
 # Set DelegateMQ build options for AsyncStateMachine
@@ -62,25 +63,36 @@ set_target_properties(StateMachineLib PROPERTIES
 # Library source files
 set(LIBRARY_SOURCES
     src/ipc_utility.cpp
+)
+
+set(LIBRARY_UTIL_SOURCES
+    src/util/logging.cpp
+)
+
+set(ALL_LIBRARY_SOURCES
+    ${LIBRARY_SOURCES}
+    ${LIBRARY_UTIL_SOURCES}
     ${DMQ_PREDEF_SOURCES}
 )
 
 # Library header files
 set(LIBRARY_HEADERS
-    include/boost_ipc_utility/ipc_utility.h
+    include/boost_ipc_util/ipc_utility.h
 )
 
 set(LIBRARY_BOOST_HEADERS
-    include/boost_ipc_utility/boost/interprocess.h
+    include/boost_ipc_util/boost/interprocess.h
 )
 
 set(LIBRARY_UTIL_HEADERS
-    include/boost_ipc_utility/util/singleton.h
-    include/boost_ipc_utility/util/macro.h
+    include/boost_ipc_util/util/singleton.h
+    include/boost_ipc_util/util/macro.h
+    include/boost_ipc_util/util/logging.h
 )
 
 # Organize source files into Visual Studio filters
 source_group("Source Files" FILES ${LIBRARY_SOURCES})
+source_group("Source Files\\util" FILES ${LIBRARY_UTIL_SOURCES})
 source_group("Header Files" FILES ${LIBRARY_HEADERS})
 source_group("Header Files\\boost" FILES ${LIBRARY_BOOST_HEADERS})
 source_group("Header Files\\util" FILES ${LIBRARY_UTIL_HEADERS})
@@ -88,7 +100,7 @@ source_group("DelegateMQ" FILES ${DMQ_PREDEF_SOURCES})
 
 # Create static library
 add_library(${PROJECT_NAME} STATIC
-    ${LIBRARY_SOURCES}
+    ${ALL_LIBRARY_SOURCES}
     ${LIBRARY_HEADERS}
     ${LIBRARY_BOOST_HEADERS}
     ${LIBRARY_UTIL_HEADERS}
@@ -123,14 +135,19 @@ if(WIN32)
     endif()
     
     # WIN32_LEAN_AND_MEAN (optional)
-    if(USE_WIN32_LEAN_AND_MEAN)
+    if(WIN32_LEAN_AND_MEAN)
         target_compile_definitions(${PROJECT_NAME} PUBLIC WIN32_LEAN_AND_MEAN)
     endif()
 endif()
 
 # Boost Interprocess custom shared directory (optional)
-if(USE_BOOST_INTERPROCESS_SHARED_DIR_FUNC)
+if(BOOST_INTERPROCESS_SHARED_DIR_FUNC)
     target_compile_definitions(${PROJECT_NAME} PUBLIC BOOST_INTERPROCESS_SHARED_DIR_FUNC)
+endif()
+
+# Library logging (optional)
+if(BIU_ENABLE_LOGGING)
+    target_compile_definitions(${PROJECT_NAME} PRIVATE BIU_ENABLE_LOGGING)
 endif()
 
 if(MSVC)
