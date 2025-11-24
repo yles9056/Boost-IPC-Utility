@@ -67,6 +67,8 @@ set(LIBRARY_SOURCES
 
 set(LIBRARY_UTIL_SOURCES
     src/util/logging.cpp
+    src/util/misc.cpp
+    src/util/uuid.cpp
 )
 
 set(ALL_LIBRARY_SOURCES
@@ -88,6 +90,8 @@ set(LIBRARY_UTIL_HEADERS
     include/boost_ipc_util/util/singleton.h
     include/boost_ipc_util/util/macro.h
     include/boost_ipc_util/util/logging.h
+    include/boost_ipc_util/util/misc.h
+    include/boost_ipc_util/util/uuid.h
 )
 
 # Organize source files into Visual Studio filters
